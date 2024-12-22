@@ -13,6 +13,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   List<dynamic> bucketlistData = [];
   bool isLoading = false;
+  bool isError = false;
 
   void getData() async {
     setState(() {
@@ -24,18 +25,20 @@ class _MainScreenState extends State<MainScreen> {
           "https://flutterapitest321-default-rtdb.firebaseio.com/bucketlist.json");
       bucketlistData = response.data;
       isLoading = false;
+      isError = false;
       setState(() {});
     } catch (e) {
       setState(() {
         isLoading = false;
+        isError = true;
       });
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-                title: Text(
-                    "Connection to the server error! Please try again later"));
-          });
+      // showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return AlertDialog(
+      //           title: Text(
+      //               "Connection to the server error! Please try again later"));
+      //     });
     }
   }
 
@@ -43,6 +46,46 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     getData();
     super.initState();
+  }
+
+  Widget errorWidget({required String errorMessage}) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.warning),
+          Text(errorMessage),
+          ElevatedButton(onPressed: getData, child: Text("Try Again"))
+        ],
+      ),
+    );
+  }
+
+  Widget listViewWidget() {
+    return ListView.builder(
+        itemCount: bucketlistData.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ViewItem(
+                    title: bucketlistData[index]['item'] ?? "",
+                    image: bucketlistData[index]['image'] ?? "",
+                  );
+                }));
+              },
+              leading: CircleAvatar(
+                radius: 25,
+                backgroundImage:
+                    NetworkImage(bucketlistData[index]['image'] ?? ""),
+              ),
+              title: Text(bucketlistData[index]['item'] ?? ""),
+              trailing: Text(bucketlistData[index]['cost'].toString()),
+            ),
+          );
+        });
   }
 
   @override
@@ -75,32 +118,9 @@ class _MainScreenState extends State<MainScreen> {
         },
         child: isLoading
             ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: bucketlistData.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return ViewItem(
-                            title: bucketlistData[index]['item'] ?? "",
-                            image: bucketlistData[index]['image'] ?? "",
-                          );
-                        }));
-                      },
-                      leading: CircleAvatar(
-                        radius: 25,
-                        backgroundImage:
-                            NetworkImage(bucketlistData[index]['image'] ?? ""),
-                      ),
-                      title: Text(bucketlistData[index]['item'] ?? ""),
-                      trailing:
-                          Text(bucketlistData[index]['cost'].toString() ?? ""),
-                    ),
-                  );
-                }),
+            : isError
+                ? errorWidget(errorMessage: "Error establishing connection...")
+                : listViewWidget(),
       ),
     );
   }
