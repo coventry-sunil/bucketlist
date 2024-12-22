@@ -1,3 +1,5 @@
+import 'package:bucketlist/add_bucket_list.dart';
+import 'package:bucketlist/view_item.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -46,6 +48,16 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigator.pushNamed(context, "/add");
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return AddBucketList();
+          }));
+        },
+        shape: CircleBorder(),
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(
         title: Text("Bucket List"),
         actions: [
@@ -69,6 +81,15 @@ class _MainScreenState extends State<MainScreen> {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ListTile(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return ViewItem(
+                            title: bucketlistData[index]['item'] ?? "",
+                            image: bucketlistData[index]['image'] ?? "",
+                          );
+                        }));
+                      },
                       leading: CircleAvatar(
                         radius: 25,
                         backgroundImage:
