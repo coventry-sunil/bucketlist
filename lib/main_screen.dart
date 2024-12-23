@@ -23,7 +23,13 @@ class _MainScreenState extends State<MainScreen> {
     try {
       Response response = await Dio().get(
           "https://flutterapitest321-default-rtdb.firebaseio.com/bucketlist.json");
-      bucketlistData = response.data;
+
+      if (response.data is List) {
+        bucketlistData = response.data;
+      } else {
+        bucketlistData = [];
+      }
+
       isLoading = false;
       isError = false;
       setState(() {});
@@ -120,7 +126,9 @@ class _MainScreenState extends State<MainScreen> {
             ? Center(child: CircularProgressIndicator())
             : isError
                 ? errorWidget(errorMessage: "Error establishing connection...")
-                : listViewWidget(),
+                : bucketlistData.length < 1
+                    ? Center(child: Text("No data on bucket list"))
+                    : listViewWidget(),
       ),
     );
   }
