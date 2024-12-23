@@ -1,15 +1,32 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class ViewItem extends StatefulWidget {
-  String title;
-  String image;
-  ViewItem({super.key, required this.title, required this.image});
+  final String title;
+  final String image;
+  final int index;
+  const ViewItem(
+      {super.key,
+      required this.title,
+      required this.image,
+      required this.index});
 
   @override
   State<ViewItem> createState() => _ViewItemState();
 }
 
 class _ViewItemState extends State<ViewItem> {
+  Future<void> deleteData() async {
+    Navigator.pop(context);
+    try {
+      Response response = await Dio().delete(
+          "https://flutterapitest321-default-rtdb.firebaseio.com/bucketlist/${widget.index}.json");
+      Navigator.pop(context);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +45,7 @@ class _ViewItemState extends State<ViewItem> {
                               Navigator.pop(context);
                             },
                             child: Text("Cancel")),
-                        Text("Confirm")
+                        InkWell(onTap: deleteData, child: Text("Confirm"))
                       ],
                     );
                   });
@@ -40,7 +57,7 @@ class _ViewItemState extends State<ViewItem> {
             ];
           })
         ],
-        title: Text('${widget.title}'),
+        title: Text(widget.title),
       ),
       body: Container(
         height: 250,

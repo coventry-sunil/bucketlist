@@ -15,7 +15,7 @@ class _MainScreenState extends State<MainScreen> {
   bool isLoading = false;
   bool isError = false;
 
-  void getData() async {
+  Future<void> getData() async {
     setState(() {
       isLoading = true;
     });
@@ -73,23 +73,29 @@ class _MainScreenState extends State<MainScreen> {
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ViewItem(
-                    title: bucketlistData[index]['item'] ?? "",
-                    image: bucketlistData[index]['image'] ?? "",
-                  );
-                }));
-              },
-              leading: CircleAvatar(
-                radius: 25,
-                backgroundImage:
-                    NetworkImage(bucketlistData[index]['image'] ?? ""),
-              ),
-              title: Text(bucketlistData[index]['item'] ?? ""),
-              trailing: Text(bucketlistData[index]['cost'].toString()),
-            ),
+            child: (bucketlistData[index] is Map)
+                ? ListTile(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ViewItem(
+                          index: index,
+                          title: bucketlistData[index]['item'] ?? "",
+                          image: bucketlistData[index]['image'] ?? "",
+                        );
+                      })).then((value) {
+                        getData();
+                      });
+                    },
+                    leading: CircleAvatar(
+                      radius: 25,
+                      backgroundImage:
+                          NetworkImage(bucketlistData[index]['image'] ?? ""),
+                    ),
+                    title: Text(bucketlistData[index]['item'] ?? ""),
+                    trailing: Text(bucketlistData[index]['cost'].toString()),
+                  )
+                : SizedBox(),
           );
         });
   }
@@ -126,7 +132,7 @@ class _MainScreenState extends State<MainScreen> {
             ? Center(child: CircularProgressIndicator())
             : isError
                 ? errorWidget(errorMessage: "Error establishing connection...")
-                : bucketlistData.length < 1
+                : bucketlistData.isEmpty
                     ? Center(child: Text("No data on bucket list"))
                     : listViewWidget(),
       ),
