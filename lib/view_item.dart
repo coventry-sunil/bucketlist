@@ -19,7 +19,7 @@ class _ViewItemState extends State<ViewItem> {
   Future<void> deleteData() async {
     Navigator.pop(context);
     try {
-      Response response = await Dio().delete(
+      await Dio().delete(
           "https://flutterapitest321-default-rtdb.firebaseio.com/bucketlist/${widget.index}.json");
       Navigator.pop(context, "refresh");
     } catch (e) {
@@ -30,7 +30,7 @@ class _ViewItemState extends State<ViewItem> {
   Future<void> markComplete() async {
     try {
       Map<String, dynamic> markData = {"completed": true};
-      Response response = await Dio().patch(
+      await Dio().patch(
           "https://flutterapitest321-default-rtdb.firebaseio.com/bucketlist/${widget.index}.json",
           data: markData);
     } catch (e) {
