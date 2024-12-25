@@ -1,5 +1,7 @@
-import 'package:bucketlist/add_bucket_list.dart';
-import 'package:bucketlist/view_item.dart';
+// ignore_for_file: prefer_is_empty
+
+import 'package:bucketlist/screens/add_screen.dart';
+import 'package:bucketlist/screens/view_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -69,7 +71,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget listViewWidget() {
     List<dynamic> filteredList = bucketlistData
-        .where((element) => (!(element?["completed"]) ?? false))
+        .where((element) => !(element?["completed"] ?? false))
         .toList();
 
     return filteredList.length < 1
@@ -87,8 +89,8 @@ class _MainScreenState extends State<MainScreen> {
                               MaterialPageRoute(builder: (context) {
                             return ViewItem(
                               index: index,
-                              title: bucketlistData[index]['item'] ?? "",
-                              image: bucketlistData[index]['image'] ?? "",
+                              title: bucketlistData[index]?['item'] ?? "",
+                              image: bucketlistData[index]?['image'] ?? "",
                             );
                           })).then((value) {
                             if (value == "refresh") {
@@ -99,11 +101,11 @@ class _MainScreenState extends State<MainScreen> {
                         leading: CircleAvatar(
                           radius: 25,
                           backgroundImage: NetworkImage(
-                              bucketlistData[index]['image'] ?? ""),
+                              bucketlistData[index]?['image'] ?? ""),
                         ),
-                        title: Text(bucketlistData[index]['item'] ?? ""),
-                        trailing:
-                            Text(bucketlistData[index]['cost'].toString()),
+                        title: Text(bucketlistData[index]?['item'] ?? ""),
+                        trailing: Text(
+                            bucketlistData[index]?['cost'].toString() ?? ""),
                       ),
                     )
                   : SizedBox();

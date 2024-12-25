@@ -26,9 +26,10 @@ class _AddBucketListState extends State<AddBucketList> {
       await Dio().patch(
           "https://flutterapitest321-default-rtdb.firebaseio.com/bucketlist/${widget.index}.json",
           data: newData);
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, "refresh");
     } catch (e) {
-      print(e);
+      e.toString();
     }
   }
 
@@ -52,6 +53,8 @@ class _AddBucketListState extends State<AddBucketList> {
                   }
                   if (value == null || value.isEmpty) {
                     return "This field is required and must not be empty.";
+                  } else {
+                    return null;
                   }
                 },
                 controller: itemText,
@@ -63,6 +66,8 @@ class _AddBucketListState extends State<AddBucketList> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "This field is required and must not be empty.";
+                  } else {
+                    return null;
                   }
                 },
                 controller: costText,
@@ -74,6 +79,8 @@ class _AddBucketListState extends State<AddBucketList> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "This field is required and must not be empty.";
+                  } else {
+                    return null;
                   }
                 },
                 controller: imageURLText,

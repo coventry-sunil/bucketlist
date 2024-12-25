@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +25,7 @@ class _ViewItemState extends State<ViewItem> {
           "https://flutterapitest321-default-rtdb.firebaseio.com/bucketlist/${widget.index}.json");
       Navigator.pop(context, "refresh");
     } catch (e) {
-      print(e);
+      e.toString();
     }
   }
 
@@ -34,7 +36,7 @@ class _ViewItemState extends State<ViewItem> {
           "https://flutterapitest321-default-rtdb.firebaseio.com/bucketlist/${widget.index}.json",
           data: markData);
     } catch (e) {
-      print(e);
+      e.toString();
     }
   }
 
