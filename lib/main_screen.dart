@@ -117,8 +117,14 @@ class _MainScreenState extends State<MainScreen> {
         onPressed: () {
           // Navigator.pushNamed(context, "/add");
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return AddBucketList();
-          }));
+            return AddBucketList(
+              index: bucketlistData.length,
+            );
+          })).then((value) {
+            if (value == "refresh") {
+              getData();
+            }
+          });
         },
         shape: CircleBorder(),
         child: Icon(Icons.add),
